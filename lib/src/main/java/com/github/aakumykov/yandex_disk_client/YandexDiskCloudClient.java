@@ -20,7 +20,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class YandexDiskCloudClient implements CloudClient<Resource, Resource, String> {
+public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, Resource, T> {
 
     private static final String SLASH = "/";
     private final YandexDiskApi mYandexDiskApi;
@@ -34,7 +34,7 @@ public class YandexDiskCloudClient implements CloudClient<Resource, Resource, St
 
 
     @Override
-    public Single<List<String>> getItemsListAsync(@NonNull String remoteDirName,
+    public Single<List<T>> getItemsListAsync(@NonNull String remoteDirName,
                                                   @NonNull SortingMode sortingMode,
                                                   int startOffset,
                                                   int limit) {
@@ -44,7 +44,7 @@ public class YandexDiskCloudClient implements CloudClient<Resource, Resource, St
     }
 
     @Override
-    public List<String> getItemsList(@NonNull String remoteDirName, 
+    public List<T> getItemsList(@NonNull String remoteDirName,
                                      @NonNull SortingMode sortingMode, 
                                      int startOffset, 
                                      int limit) throws CloudClientException, IOException {
@@ -137,7 +137,7 @@ public class YandexDiskCloudClient implements CloudClient<Resource, Resource, St
     }
 
     @Override
-    public List<String> extractCloudItemsFromCloudDir(Resource cloudDirResource) {
+    public List<T> extractCloudItemsFromCloudDir(Resource cloudDirResource) {
 
         return cloudDirResource.getResourceList().getItems()
                 .stream()
@@ -146,9 +146,7 @@ public class YandexDiskCloudClient implements CloudClient<Resource, Resource, St
     }
 
     @Override
-    public String cloudItemToLocalItem(Resource resource) {
-        return resource.getName();
-    }
+    public abstract T cloudItemToLocalItem(Resource resource);
 
 
     public static class YandexDiskClientException extends Throwable {}
