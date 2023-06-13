@@ -12,9 +12,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.reactivex.Single;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class YandexDiskCloudClient implements CloudClient<Resource, Resource, String> {
 
@@ -22,10 +26,10 @@ public class YandexDiskCloudClient implements CloudClient<Resource, Resource, St
     private final YandexDiskApi mYandexDiskApi;
     @NonNull private final String mPublicResourceKey;
 
-    public YandexDiskCloudClient(@NonNull YandexDiskApi yandexDiskApi,
-                                 @NonNull String publicResourceKey) {
+
+    public YandexDiskCloudClient(@NonNull String publicResourceKey) {
         mPublicResourceKey = checkNotNull(publicResourceKey);
-        mYandexDiskApi = yandexDiskApi;
+        mYandexDiskApi = getWebApi();
     }
 
 
@@ -74,7 +78,7 @@ public class YandexDiskCloudClient implements CloudClient<Resource, Resource, St
 
         return Single.create(emitter -> {
 
-            final Call<Link> call = mYandexDiskApi.getPublicFileDownloadLink(mPublicResourceKey, fixStartingSlash(remoteFileOrDirPath));
+            final Call<Link> call = mYandexDiskApi.getPublicFileDownloadLink(mPublicResourceKey, fixFilePathStartingSlash(remoteFileOrDirPath));
 
             call.enqueue(new Callback<Link>() {
                 @Override
@@ -99,7 +103,7 @@ public class YandexDiskCloudClient implements CloudClient<Resource, Resource, St
 
         checkNotNull(remoteFileOfDirPath);
 
-        final Call<Resource> call = mYandexDiskApi.getPublicResource(mPublicResourceKey, fixStartingSlash(remoteFileOfDirPath));
+        final Call<Resource> call = mYandexDiskApi.getPublicResource(mPublicResourceKey, fixFilePathStartingSlash(remoteFileOfDirPath));
 
         return Single.create(emitter -> call.enqueue(new Callback<Resource>() {
             @Override
@@ -155,7 +159,27 @@ public class YandexDiskCloudClient implements CloudClient<Resource, Resource, St
     public static class DownloadLinkIsNullException extends YandexDiskClientException {}
 
 
-    private String fixStartingSlash(String filePath) {
+    private static YandexDiskApi getWebApi() {
+
+        OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    Request request = chain.request().newBuilder()
+                            .addHeader("Content-Type", "application/json")
+                            .build();
+                    return chain.proceed(request);
+                });
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://cloud-api.yandex.net/v1/disk/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClientBuilder.build())
+                .build();
+
+        return retrofit.create(YandexDiskApi.class);
+    }
+
+
+    private String fixFilePathStartingSlash(String filePath) {
         return filePath.startsWith(SLASH) ? filePath : SLASH + filePath;
     }
 }
