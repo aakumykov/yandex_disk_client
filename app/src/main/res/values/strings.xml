@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">yandex_disk_client</string>
+    <string name="app_name">Клиент Яндекс.Диска</string>
+    <string name="start">Старт</string>
+    <string name="stop">Стоп</string>
+    <string name="scrollview_description">Область выпода сообщений</string>
+    <string name="BUTTON_auth">Авторизоваться в Яндекс</string>
 </resources>

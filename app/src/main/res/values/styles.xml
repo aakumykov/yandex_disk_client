@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="buttonStyle">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <style name="messageListItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">@dimen/message_list_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/message_list_padding_horizontal</item>
+        <item name="android:paddingBottom">@dimen/message_list_padding_vertical</item>
+        <item name="android:paddingTop">@dimen/message_list_padding_vertical</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:typeface">serif</item>
+    </style>
+
+    <style name="start_stop_button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">36dp</item>
+
+        <item name="android:padding">0dp</item>
+
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+
+        <item name="android:textSize">12sp</item>
+        <item name="textAllCaps">true</item>
+    </style>
+</resources>

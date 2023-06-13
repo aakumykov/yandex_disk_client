@@ -1,8 +1,8 @@
-package com.github.aakumykov.yandex_disk_client;
-
-import org.junit.Test;
+package com.github.aakumykov.yandex_disk_client_demo;
 
 import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

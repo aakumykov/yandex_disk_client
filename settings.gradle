@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "yandex_disk_client"
 include ':lib'
+include ':app'
