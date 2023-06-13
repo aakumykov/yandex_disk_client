@@ -80,15 +80,15 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void prepareRecyclerView() {
 
-        mListAdapter = new MyListAdapter(new DiffUtil.ItemCallback<String>() {
+        mListAdapter = new MyListAdapter(new DiffUtil.ItemCallback<DiskItem>() {
             @Override
-            public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+            public boolean areItemsTheSame(@NonNull DiskItem oldItem, @NonNull DiskItem newItem) {
                 return oldItem.equals(newItem);
             }
 
             @Override
-            public boolean areContentsTheSame(@NonNull String oldItem, @NonNull String newItem) {
-                return oldItem.equals(newItem);
+            public boolean areContentsTheSame(@NonNull DiskItem oldItem, @NonNull DiskItem newItem) {
+                return oldItem.name.equals(newItem.name);
             }
         });
 
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void prepareYandexClients() {
         mYandexAuthHelper = new YandexAuthHelper(this, REQUEST_CODE_YA_LOGIN, this);
-        mYandexDiskCloudClient = new YandexDiskCloudClient(getResourceKey());
+        mYandexDiskCloudClient = new MyYandexDiskClient(getResourceKey());
     }
 
     private void restoreFieldValues() {
@@ -238,14 +238,14 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
                         hideProgressBar();
                     }
                 })
-                .subscribe(new SingleObserver<List<String>>() {
+                .subscribe(new SingleObserver<List<DiskItem>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(List<String> list) {
+                    public void onSuccess(List<DiskItem> list) {
                         if (0 == list.size())
                             showToast("Получены все элементы");
                         else
@@ -421,5 +421,18 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         }
         else
             return "";
+    }
+
+    private static class MyYandexDiskClient extends YandexDiskCloudClient<DiskItem> {
+
+        public MyYandexDiskClient(@NonNull String publicResourceKey) {
+            super(publicResourceKey);
+        }
+
+        @Override
+        public DiskItem cloudItemToLocalItem(com.yandex.disk.rest.json.Resource resource) {
+            final String name = resource.isDir() ? "["+resource.getName()+"]" : resource.getName();
+            return new DiskItem(name, resource.getCreated().getTime());
+        }
     }
 }

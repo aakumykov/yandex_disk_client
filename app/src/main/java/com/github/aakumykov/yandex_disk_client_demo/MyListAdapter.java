@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
@@ -16,14 +15,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MyListAdapter extends ListAdapter<String,MyViewHolder> {
+public class MyListAdapter extends ListAdapter<DiskItem,MyViewHolder> {
 
-    protected MyListAdapter(@NonNull DiffUtil.ItemCallback<String> diffCallback) {
+    protected MyListAdapter(@NonNull DiffUtil.ItemCallback<DiskItem> diffCallback) {
         super(diffCallback);
-    }
-
-    public MyListAdapter(@NonNull AsyncDifferConfig<String> config) {
-        super(config);
     }
 
 
@@ -35,29 +30,31 @@ public class MyListAdapter extends ListAdapter<String,MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        final String item = getItem(position);
+        final DiskItem item = getItem(position);
         holder.fillWith(item);
     }
 
 
-    public void appendList(List<String> addedList, @NonNull CloudClient.SortingMode sortingMode) {
-        final List<String> list = new ArrayList<>(getCurrentList());
+    public void appendList(List<DiskItem> addedList, @NonNull CloudClient.SortingMode sortingMode) {
+        final List<DiskItem> list = new ArrayList<>(getCurrentList());
         list.addAll(addedList);
         sortList(list, sortingMode);
         submitList(list);
     }
 
-    private void sortList(List<String> list, CloudClient.SortingMode sortingMode) {
-        Collections.sort(list, new Comparator<String>() {
+    private void sortList(List<DiskItem> list, CloudClient.SortingMode sortingMode) {
+        Collections.sort(list, new Comparator<DiskItem>() {
             @Override
-            public int compare(String o1, String o2) {
+            public int compare(DiskItem o1, DiskItem o2) {
                 switch (sortingMode) {
                     case NAME_DIRECT:
-                    case C_TIME_FROM_OLD_TO_NEW:
-                        return o1.compareTo(o2);
+                        return o1.name.compareTo(o2.name);
                     case NAME_REVERSE:
+                        return o2.name.compareTo(o1.name);
+                    case C_TIME_FROM_OLD_TO_NEW:
+                        return Long.compare(o1.cTime, o2.cTime);
                     case C_TIME_FROM_NEW_TO_OLD:
-                        return o2.compareTo(o1);
+                        return Long.compare(o2.cTime, o1.cTime);
                     default:
                         throw new IllegalArgumentException("Неизвестное значение: "+sortingMode);
                 }
@@ -72,7 +69,7 @@ public class MyListAdapter extends ListAdapter<String,MyViewHolder> {
 
 
     public void setSortingMode(final CloudClient.SortingMode sortingMode) {
-        final List<String> currentList = new ArrayList<>(getCurrentList());
+        final List<DiskItem> currentList = new ArrayList<>(getCurrentList());
         sortList(currentList, sortingMode);
         submitList(currentList);
     }

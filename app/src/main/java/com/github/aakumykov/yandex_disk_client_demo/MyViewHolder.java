@@ -15,7 +15,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         mTextView = itemView.findViewById(R.id.textView);
     }
 
-    public void fillWith(String s) {
-        mTextView.setText(s);
+    public void fillWith(DiskItem s) {
+        mTextView.setText(s.name);
     }
 }
