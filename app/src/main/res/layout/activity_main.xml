@@ -128,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:src="@drawable/ic_baseline_restart_alt_24" />
+            android:src="@drawable/ic_reset_2" />
 
     </LinearLayout>
 
