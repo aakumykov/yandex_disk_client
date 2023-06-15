@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void onGetListButtonClicked(View view) {
 
-        mYandexDiskCloudClient.getItemsListAsync(getResourceKey(),null, sortingMode(), mListAdapter.getCurrentList().size(), 2)
+        mYandexDiskCloudClient.getListAsync(getResourceKey(),null, sortingMode(), mListAdapter.getCurrentList().size(), 2)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Consumer<Disposable>() {
