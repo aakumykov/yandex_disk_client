@@ -39,13 +39,13 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
      * или его подкаталоге remoteDirName, если он не равен null.
      */
     @Override
-    public Single<List<T>> getItemsListAsync(@NonNull String resourceKey,
-                                             @Nullable String subdirName,
-                                             @NonNull SortingMode sortingMode,
-                                             @IntRange(from = 0) int startOffset,
-                                             int limit) {
+    public Single<List<T>> getListAsync(@NonNull String resourceKey,
+                                        @Nullable String subdirName,
+                                        @NonNull SortingMode sortingMode,
+                                        @IntRange(from = 0) int startOffset,
+                                        int limit) {
 
-        return Single.fromCallable(() -> getItemsList(resourceKey, subdirName, sortingMode, startOffset, limit));
+        return Single.fromCallable(() -> getList(resourceKey, subdirName, sortingMode, startOffset, limit));
     }
 
     /**
@@ -53,11 +53,11 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
      * или его подкаталоге remoteDirName, если он не равен null.
      */
     @Override
-    public List<T> getItemsList(@NonNull String resourceKey,
-                                @Nullable String subdirName,
-                                @NonNull SortingMode sortingMode,
-                                @IntRange(from = 0) int startOffset,
-                                int limit) throws CloudClientException, IOException {
+    public List<T> getList(@NonNull String resourceKey,
+                           @Nullable String subdirName,
+                           @NonNull SortingMode sortingMode,
+                           @IntRange(from = 0) int startOffset,
+                           int limit) throws CloudClientException, IOException {
 
         // Проверка аргументов
         checkNotNull(resourceKey);
