@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-public interface CloudClient<CloudDirType, CloudFileType, OutputItemType> {
+public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, SortingModeType> {
 
     enum SortingMode {
         NAME_DIRECT,
@@ -47,6 +47,12 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType> {
 
 
     // Вспомогательные методы
+
+    /**
+     * Преобразует тип сортировки списка программы-пользователя во внутренний тип сортировки библиотеки.
+     */
+    SortingMode convertSortingMode(SortingModeType externalSortingMode);
+
     String sortingModeToSortingKey(@NonNull SortingMode sortingMode);
 
     List<OutputItemType> extractCloudItemsFromCloudDir(CloudDirType cloudResource);
