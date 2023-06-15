@@ -22,7 +22,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, Resource, T> {
+public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> implements CloudClient<Resource, Resource, OutputItemType, SortingModeType> {
 
     private static final String TAG = YandexDiskCloudClient.class.getSimpleName();
     private static final String SLASH = "/";
@@ -39,7 +39,7 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
      * или его подкаталоге remoteDirName, если он не равен null.
      */
     @Override
-    public Single<List<T>> getListAsync(@NonNull String resourceKey,
+    public Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                         @Nullable String subdirName,
                                         @NonNull SortingMode sortingMode,
                                         @IntRange(from = 0) int startOffset,
@@ -53,7 +53,7 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
      * или его подкаталоге remoteDirName, если он не равен null.
      */
     @Override
-    public List<T> getList(@NonNull String resourceKey,
+    public List<OutputItemType> getList(@NonNull String resourceKey,
                            @Nullable String subdirName,
                            @NonNull SortingMode sortingMode,
                            @IntRange(from = 0) int startOffset,
@@ -141,6 +141,9 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
         }));
     }
 
+    @Override
+    public abstract SortingMode convertSortingMode(SortingModeType externalSortingMode);
+
 
     @Override
     public String sortingModeToSortingKey(@NonNull SortingMode sortingMode) {
@@ -159,7 +162,7 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
     }
 
     @Override
-    public List<T> extractCloudItemsFromCloudDir(Resource resource) {
+    public List<OutputItemType> extractCloudItemsFromCloudDir(Resource resource) {
 
         if (!resource.isDir())
             throw new IllegalArgumentException("Resource is not a dir: "+cloudFileToString(resource));
@@ -171,7 +174,7 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
     }
 
     @Override
-    public abstract T cloudItemToLocalItem(Resource resource);
+    public abstract OutputItemType cloudItemToLocalItem(Resource resource);
 
     @Override
     public abstract String cloudFileToString(Resource resource);
