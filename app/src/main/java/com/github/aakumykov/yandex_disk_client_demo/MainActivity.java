@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     private static final String KEY_REMOTE_PATH = "PATH";
 
     private YandexAuthHelper mYandexAuthHelper;
-    private YandexDiskCloudClient mYandexDiskCloudClient;
+    private YandexDiskCloudClient<DiskItem> mYandexDiskCloudClient;
 
     private ActivityMainBinding mBinding;
     private MyListAdapter mListAdapter;
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void onGetListButtonClicked(View view) {
 
-        mYandexDiskCloudClient.getItemsListAsync("", sortingMode(), mListAdapter.getCurrentList().size(), 2)
+        mYandexDiskCloudClient.getItemsListAsync(null, sortingMode(), mListAdapter.getCurrentList().size(), 2)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Consumer<Disposable>() {
