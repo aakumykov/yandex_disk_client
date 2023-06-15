@@ -2,7 +2,9 @@ package com.github.aakumykov.yandex_disk_client;
 
 import static com.github.aakumykov.argument_utils.ArgumentUtils.checkNotNull;
 
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yandex.disk.rest.json.Link;
 import com.yandex.disk.rest.json.Resource;
@@ -33,34 +35,50 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
     }
 
 
+    /**
+     * Запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
+     * или его подкаталоге remoteDirName, если он не равен null.
+     */
     @Override
-    public Single<List<T>> getItemsListAsync(@NonNull String remoteDirName,
-                                                  @NonNull SortingMode sortingMode,
-                                                  int startOffset,
-                                                  int limit) {
-        
+    public Single<List<T>> getItemsListAsync(@Nullable String subdirName,
+                                             @NonNull SortingMode sortingMode,
+                                             @IntRange(from = 0) int startOffset,
+                                             int limit) {
 
-        return Single.fromCallable(() -> getItemsList(remoteDirName, sortingMode, startOffset, limit));
+        return Single.fromCallable(() -> getItemsList(subdirName, sortingMode, startOffset, limit));
     }
 
+    /**
+     * Запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
+     * или его подкаталоге remoteDirName, если он не равен null.
+     */
     @Override
-    public List<T> getItemsList(@NonNull String remoteDirName,
-                                     @NonNull SortingMode sortingMode, 
-                                     int startOffset, 
-                                     int limit) throws CloudClientException, IOException {
-        checkNotNull(remoteDirName);
-        checkNotNull(remoteDirName);
+    public List<T> getItemsList(@Nullable String subdirName,
+                                @NonNull SortingMode sortingMode,
+                                @IntRange(from = 0) int startOffset,
+                                int limit) throws CloudClientException, IOException {
 
+        // Проверка аргументов
+        checkNotNull(sortingMode);
+
+        if (startOffset < 0)
+            throw new IllegalArgumentException("Start offset must cannot be lesser than zero");
+
+        // Определение эффективного имени подкаталога
+        final String dirName = (null != subdirName) ? subdirName : "";
+
+        // Запрос к API
         final Call<Resource> call = mYandexDiskApi.getPublicResourceWithContentList(
                 mPublicResourceKey,
-                "",
+                dirName,
                 sortingModeToSortingKey(sortingMode),
                 startOffset,
                 limit
         );
 
         final Response<Resource> response = call.execute();
-        
+
+        // Обработка результата запроса
         if (!response.isSuccessful())
             throw new BadResponseException(response.code()+": "+response.message());
 
