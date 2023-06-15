@@ -1,6 +1,7 @@
 package com.github.aakumykov.yandex_disk_client;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,21 +18,21 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType> {
     }
 
     // Главные методы
-    Single<List<OutputItemType>> getItemsListAsync(@NonNull String remoteDirName,
+    Single<List<OutputItemType>> getItemsListAsync(@NonNull String resourceKey,
+                                                   @Nullable String subdirName,
                                                    @NonNull SortingMode sortingMode,
                                                    int startOffset,
                                                    int limit);
 
-    List<OutputItemType> getItemsList(@NonNull String remoteDirName,
+    List<OutputItemType> getItemsList(@NonNull String resourceKey,
+                                      @Nullable String subdirName,
                                       @NonNull SortingMode sortingMode,
                                       int startOffset,
                                       int limit) throws CloudClientException, IOException;
-    
-    // TODO: сюда просится метод получения единичного элемента "getItem()", но он пока не нужен.
 
-    Single<String> getItemDownloadLink(@NonNull String remoteFilePath);
+    Single<String> getItemDownloadLink(@NonNull String resourceKey, @NonNull String remoteFilePath);
 
-    Single<Boolean> checkItemExists(@NonNull String remoteFilePath);
+    Single<Boolean> checkItemExists(@NonNull String resourceKey, @NonNull String remoteFilePath);
 
 
 
@@ -39,9 +40,11 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType> {
     // Вспомогательные методы
     String sortingModeToSortingKey(@NonNull SortingMode sortingMode);
 
-    List<OutputItemType> extractCloudItemsFromCloudDir(CloudDirType cloudDirResource);
+    List<OutputItemType> extractCloudItemsFromCloudDir(CloudDirType cloudResource);
 
     OutputItemType cloudItemToLocalItem(CloudFileType cloudFileType);
+
+    String cloudFileToString(CloudFileType cloudFileType);
 
     
     abstract class CloudClientException extends Exception {

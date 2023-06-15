@@ -24,13 +24,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, Resource, T> {
 
+    private static final String TAG = YandexDiskCloudClient.class.getSimpleName();
     private static final String SLASH = "/";
     private final YandexDiskApi mYandexDiskApi;
-    @NonNull private final String mPublicResourceKey;
 
 
-    public YandexDiskCloudClient(@NonNull String publicResourceKey) {
-        mPublicResourceKey = checkNotNull(publicResourceKey);
+    public YandexDiskCloudClient() {
         mYandexDiskApi = getWebApi();
     }
 
@@ -40,12 +39,13 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
      * или его подкаталоге remoteDirName, если он не равен null.
      */
     @Override
-    public Single<List<T>> getItemsListAsync(@Nullable String subdirName,
+    public Single<List<T>> getItemsListAsync(@NonNull String resourceKey,
+                                             @Nullable String subdirName,
                                              @NonNull SortingMode sortingMode,
                                              @IntRange(from = 0) int startOffset,
                                              int limit) {
 
-        return Single.fromCallable(() -> getItemsList(subdirName, sortingMode, startOffset, limit));
+        return Single.fromCallable(() -> getItemsList(resourceKey, subdirName, sortingMode, startOffset, limit));
     }
 
     /**
@@ -53,14 +53,15 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
      * или его подкаталоге remoteDirName, если он не равен null.
      */
     @Override
-    public List<T> getItemsList(@Nullable String subdirName,
+    public List<T> getItemsList(@NonNull String resourceKey,
+                                @Nullable String subdirName,
                                 @NonNull SortingMode sortingMode,
                                 @IntRange(from = 0) int startOffset,
                                 int limit) throws CloudClientException, IOException {
 
         // Проверка аргументов
+        checkNotNull(resourceKey);
         checkNotNull(sortingMode);
-
         if (startOffset < 0)
             throw new IllegalArgumentException("Start offset must cannot be lesser than zero");
 
@@ -69,7 +70,7 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
 
         // Запрос к API
         final Call<Resource> call = mYandexDiskApi.getPublicResourceWithContentList(
-                mPublicResourceKey,
+                resourceKey,
                 dirName,
                 sortingModeToSortingKey(sortingMode),
                 startOffset,
@@ -90,13 +91,15 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
     }
 
     @Override
-    public Single<String> getItemDownloadLink(@NonNull String remoteFileOrDirPath) {
+    public Single<String> getItemDownloadLink(@NonNull String resourceKey,
+                                              @NonNull String remoteFileOrDirPath) {
 
+        checkNotNull(resourceKey);
         checkNotNull(remoteFileOrDirPath);
 
         return Single.create(emitter -> {
 
-            final Call<Link> call = mYandexDiskApi.getPublicFileDownloadLink(mPublicResourceKey, fixFilePathStartingSlash(remoteFileOrDirPath));
+            final Call<Link> call = mYandexDiskApi.getPublicFileDownloadLink(resourceKey, fixFilePathStartingSlash(remoteFileOrDirPath));
 
             call.enqueue(new Callback<Link>() {
                 @Override
@@ -117,11 +120,12 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
     }
 
     @Override
-    public Single<Boolean> checkItemExists(@NonNull String remoteFileOfDirPath) {
+    public Single<Boolean> checkItemExists(@NonNull String resourceKey, @NonNull String remoteFileOfDirPath) {
 
+        checkNotNull(resourceKey);
         checkNotNull(remoteFileOfDirPath);
 
-        final Call<Resource> call = mYandexDiskApi.getPublicResource(mPublicResourceKey, fixFilePathStartingSlash(remoteFileOfDirPath));
+        final Call<Resource> call = mYandexDiskApi.getPublicResource(resourceKey, fixFilePathStartingSlash(remoteFileOfDirPath));
 
         return Single.create(emitter -> call.enqueue(new Callback<Resource>() {
             @Override
@@ -155,9 +159,12 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
     }
 
     @Override
-    public List<T> extractCloudItemsFromCloudDir(Resource cloudDirResource) {
+    public List<T> extractCloudItemsFromCloudDir(Resource resource) {
 
-        return cloudDirResource.getResourceList().getItems()
+        if (!resource.isDir())
+            throw new IllegalArgumentException("Resource is not a dir: "+cloudFileToString(resource));
+
+        return resource.getResourceList().getItems()
                 .stream()
                 .map(this::cloudItemToLocalItem)
                 .collect(Collectors.toList());
@@ -165,6 +172,9 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
 
     @Override
     public abstract T cloudItemToLocalItem(Resource resource);
+
+    @Override
+    public abstract String cloudFileToString(Resource resource);
 
 
     public static class YandexDiskClientException extends Throwable {}
