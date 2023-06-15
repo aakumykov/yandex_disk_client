@@ -41,7 +41,7 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     @Override
     public Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                         @Nullable String subdirName,
-                                        @NonNull SortingMode sortingMode,
+                                        @NonNull LibrarySortingMode sortingMode,
                                         @IntRange(from = 0) int startOffset,
                                         int limit) {
 
@@ -55,7 +55,7 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     @Override
     public List<OutputItemType> getList(@NonNull String resourceKey,
                            @Nullable String subdirName,
-                           @NonNull SortingMode sortingMode,
+                           @NonNull LibrarySortingMode sortingMode,
                            @IntRange(from = 0) int startOffset,
                            int limit) throws CloudClientException, IOException {
 
@@ -142,11 +142,11 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     }
 
     @Override
-    public abstract SortingMode convertSortingMode(SortingModeType externalSortingMode);
+    public abstract LibrarySortingMode convertSortingMode(SortingModeType externalSortingMode);
 
 
     @Override
-    public String sortingModeToSortingKey(@NonNull SortingMode sortingMode) {
+    public String sortingModeToSortingKey(@NonNull LibrarySortingMode sortingMode) {
         switch (sortingMode) {
             case NAME_DIRECT:
                 return "name";
