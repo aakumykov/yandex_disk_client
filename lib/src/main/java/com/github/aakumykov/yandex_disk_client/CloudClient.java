@@ -18,12 +18,21 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType> {
     }
 
     // Главные методы
+
+    /**
+     * Асинхронно запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
+     * или его подкаталоге remoteDirName, если он не равен null.
+     */
     Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                               @Nullable String subdirName,
                                               @NonNull SortingMode sortingMode,
                                               int startOffset,
                                               int limit);
 
+    /**
+     * Синхронно запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
+     * или его подкаталоге remoteDirName, если он не равен null.
+     */
     List<OutputItemType> getList(@NonNull String resourceKey,
                                  @Nullable String subdirName,
                                  @NonNull SortingMode sortingMode,

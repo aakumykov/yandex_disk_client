@@ -34,10 +34,6 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
     }
 
 
-    /**
-     * Запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
-     * или его подкаталоге remoteDirName, если он не равен null.
-     */
     @Override
     public Single<List<T>> getListAsync(@NonNull String resourceKey,
                                         @Nullable String subdirName,
@@ -48,10 +44,6 @@ public abstract class YandexDiskCloudClient<T> implements CloudClient<Resource, 
         return Single.fromCallable(() -> getList(resourceKey, subdirName, sortingMode, startOffset, limit));
     }
 
-    /**
-     * Запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
-     * или его подкаталоге remoteDirName, если он не равен null.
-     */
     @Override
     public List<T> getList(@NonNull String resourceKey,
                            @Nullable String subdirName,
