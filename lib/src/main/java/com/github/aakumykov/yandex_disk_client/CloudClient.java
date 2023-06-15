@@ -10,13 +10,6 @@ import io.reactivex.Single;
 
 public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, SortingModeType> {
 
-    enum SortingMode {
-        NAME_DIRECT,
-        NAME_REVERSE,
-        C_TIME_FROM_OLD_TO_NEW,
-        C_TIME_FROM_NEW_TO_OLD,
-    }
-
     // Главные методы
 
     /**
@@ -25,7 +18,7 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
      */
     Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                               @Nullable String subdirName,
-                                              @NonNull SortingMode sortingMode,
+                                              @NonNull LibrarySortingMode sortingMode,
                                               int startOffset,
                                               int limit);
 
@@ -35,7 +28,7 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
      */
     List<OutputItemType> getList(@NonNull String resourceKey,
                                  @Nullable String subdirName,
-                                 @NonNull SortingMode sortingMode,
+                                 @NonNull LibrarySortingMode sortingMode,
                                  int startOffset,
                                  int limit) throws CloudClientException, IOException;
 
@@ -51,9 +44,9 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
     /**
      * Преобразует тип сортировки списка программы-пользователя во внутренний тип сортировки библиотеки.
      */
-    SortingMode convertSortingMode(SortingModeType externalSortingMode);
+    LibrarySortingMode convertSortingMode(SortingModeType externalSortingMode);
 
-    String sortingModeToSortingKey(@NonNull SortingMode sortingMode);
+    String sortingModeToSortingKey(@NonNull LibrarySortingMode sortingMode);
 
     List<OutputItemType> extractCloudItemsFromCloudDir(CloudDirType cloudResource);
 
