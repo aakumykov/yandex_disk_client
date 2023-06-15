@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     private static final String KEY_REMOTE_PATH = "PATH";
 
     private YandexAuthHelper mYandexAuthHelper;
-    private YandexDiskCloudClient<DiskItem> mYandexDiskCloudClient;
+    private YandexDiskCloudClient<DiskItem, CloudClient.SortingMode> mYandexDiskCloudClient;
 
     private ActivityMainBinding mBinding;
     private MyListAdapter mListAdapter;
@@ -443,7 +443,15 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
             return "";
     }
 
-    private static class MyYandexDiskClient extends YandexDiskCloudClient<DiskItem> {
+    private static class MyYandexDiskClient extends YandexDiskCloudClient<DiskItem, CloudClient.SortingMode> {
+
+        @Override
+        public SortingMode convertSortingMode(SortingMode externalSortingMode) {
+            // Здесь программа-пользователь библиотеки использует ту же сортировку, что и библиотека.
+
+            return externalSortingMode;
+        }
+
         @Override
         public DiskItem cloudItemToLocalItem(com.yandex.disk.rest.json.Resource resource) {
             final String name = resource.isDir() ? "["+resource.getName()+"]" : resource.getName();
