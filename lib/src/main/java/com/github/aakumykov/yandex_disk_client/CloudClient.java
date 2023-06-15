@@ -18,17 +18,17 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType> {
     }
 
     // Главные методы
-    Single<List<OutputItemType>> getItemsListAsync(@NonNull String resourceKey,
-                                                   @Nullable String subdirName,
-                                                   @NonNull SortingMode sortingMode,
-                                                   int startOffset,
-                                                   int limit);
+    Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
+                                              @Nullable String subdirName,
+                                              @NonNull SortingMode sortingMode,
+                                              int startOffset,
+                                              int limit);
 
-    List<OutputItemType> getItemsList(@NonNull String resourceKey,
-                                      @Nullable String subdirName,
-                                      @NonNull SortingMode sortingMode,
-                                      int startOffset,
-                                      int limit) throws CloudClientException, IOException;
+    List<OutputItemType> getList(@NonNull String resourceKey,
+                                 @Nullable String subdirName,
+                                 @NonNull SortingMode sortingMode,
+                                 int startOffset,
+                                 int limit) throws CloudClientException, IOException;
 
     Single<String> getItemDownloadLink(@NonNull String resourceKey, @NonNull String remoteFilePath);
 
