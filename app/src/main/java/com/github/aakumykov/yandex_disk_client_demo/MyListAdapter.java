@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
-import com.github.aakumykov.yandex_disk_client.CloudClient;
+import com.github.aakumykov.yandex_disk_client.LibrarySortingMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,14 +41,14 @@ public class MyListAdapter extends ListAdapter<DiskItem,MyViewHolder> {
     }
 
 
-    public void appendList(List<DiskItem> addedList, @NonNull CloudClient.SortingMode sortingMode) {
+    public void appendList(List<DiskItem> addedList, @NonNull LibrarySortingMode sortingMode) {
         final List<DiskItem> list = new ArrayList<>(getCurrentList());
         list.addAll(addedList);
         sortList(list, sortingMode);
         submitList(list);
     }
 
-    private void sortList(List<DiskItem> list, CloudClient.SortingMode sortingMode) {
+    private void sortList(List<DiskItem> list, LibrarySortingMode sortingMode) {
         Collections.sort(list, new Comparator<DiskItem>() {
             @Override
             public int compare(DiskItem o1, DiskItem o2) {
@@ -74,7 +74,7 @@ public class MyListAdapter extends ListAdapter<DiskItem,MyViewHolder> {
     }
 
 
-    public void setSortingMode(final CloudClient.SortingMode sortingMode) {
+    public void setSortingMode(final LibrarySortingMode sortingMode) {
         final List<DiskItem> currentList = new ArrayList<>(getCurrentList());
         sortList(currentList, sortingMode);
         submitList(currentList);

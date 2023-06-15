@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.github.aakumykov.yandex_auth_helper.YandexAuthHelper;
-import com.github.aakumykov.yandex_disk_client.CloudClient;
+import com.github.aakumykov.yandex_disk_client.LibrarySortingMode;
 import com.github.aakumykov.yandex_disk_client.YandexDiskCloudClient;
 import com.github.aakumykov.yandex_disk_client_demo.databinding.ActivityMainBinding;
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils;
@@ -45,13 +45,13 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     private static final String KEY_REMOTE_PATH = "PATH";
 
     private YandexAuthHelper mYandexAuthHelper;
-    private YandexDiskCloudClient<DiskItem, CloudClient.SortingMode> mYandexDiskCloudClient;
+    private YandexDiskCloudClient<DiskItem, LibrarySortingMode> mYandexDiskCloudClient;
 
     private ActivityMainBinding mBinding;
     private MyListAdapter mListAdapter;
     private ClipboardManager mClipboardManager;
 
-    private CloudClient.SortingMode mCurrentSortingMode;
+    private LibrarySortingMode mCurrentSortingMode;
     private @Nullable String mAuthToken;
 
     @Override
@@ -260,21 +260,21 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
                 });
     }
 
-    private CloudClient.SortingMode sortingMode() {
+    private LibrarySortingMode sortingMode() {
 
         final boolean byName = mBinding.sortByNameButton.isChecked();
         final boolean directOrder = mBinding.isDirectSortToggle.isChecked();
 
-        CloudClient.SortingMode sortingMode;
+        LibrarySortingMode sortingMode;
 
         if (byName) {
             sortingMode = (directOrder) ?
-                    CloudClient.SortingMode.NAME_DIRECT :
-                    CloudClient.SortingMode.NAME_REVERSE;
+                    LibrarySortingMode.NAME_DIRECT :
+                    LibrarySortingMode.NAME_REVERSE;
         } else { // by cTime
             sortingMode = (directOrder) ?
-                    CloudClient.SortingMode.C_TIME_FROM_OLD_TO_NEW :
-                    CloudClient.SortingMode.C_TIME_FROM_NEW_TO_OLD;
+                    LibrarySortingMode.C_TIME_FROM_OLD_TO_NEW :
+                    LibrarySortingMode.C_TIME_FROM_NEW_TO_OLD;
         }
 
         return sortingMode;
@@ -443,10 +443,10 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
             return "";
     }
 
-    private static class MyYandexDiskClient extends YandexDiskCloudClient<DiskItem, CloudClient.SortingMode> {
+    private static class MyYandexDiskClient extends YandexDiskCloudClient<DiskItem, LibrarySortingMode> {
 
         @Override
-        public SortingMode convertSortingMode(SortingMode externalSortingMode) {
+        public LibrarySortingMode convertSortingMode(LibrarySortingMode externalSortingMode) {
             // Здесь программа-пользователь библиотеки использует ту же сортировку, что и библиотека.
 
             return externalSortingMode;
