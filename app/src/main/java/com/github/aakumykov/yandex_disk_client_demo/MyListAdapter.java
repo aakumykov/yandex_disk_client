@@ -17,8 +17,12 @@ import java.util.List;
 
 public class MyListAdapter extends ListAdapter<DiskItem,MyViewHolder> {
 
-    protected MyListAdapter(@NonNull DiffUtil.ItemCallback<DiskItem> diffCallback) {
+    private ItemClickListener mItemClickListener;
+
+    protected MyListAdapter(@NonNull DiffUtil.ItemCallback<DiskItem> diffCallback,
+                            @NonNull ItemClickListener itemClickListener) {
         super(diffCallback);
+        mItemClickListener = itemClickListener;
     }
 
 
@@ -30,8 +34,10 @@ public class MyListAdapter extends ListAdapter<DiskItem,MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        final DiskItem item = getItem(position);
-        holder.fillWith(item);
+        final DiskItem diskItem = getItem(position);
+        holder.fillWith(diskItem);
+        holder.itemView.setOnClickListener(v -> mItemClickListener.onItemClicked(diskItem));
+        holder.itemView.setOnLongClickListener(v -> mItemClickListener.onItemLongClicked(diskItem));
     }
 
 

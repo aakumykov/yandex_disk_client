@@ -35,7 +35,7 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements YandexAuthHelper.Callbacks {
+public class MainActivity extends AppCompatActivity implements YandexAuthHelper.Callbacks, ItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE_YA_LOGIN = 10;
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
             public boolean areContentsTheSame(@NonNull DiskItem oldItem, @NonNull DiskItem newItem) {
                 return oldItem.name.equals(newItem.name);
             }
-        });
+        }, this);
 
         mBinding.recyclerView.setAdapter(mListAdapter);
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -376,6 +376,17 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         showYandexAuthStatus();
     }
 
+    @Override
+    public void onItemClicked(DiskItem diskItem) {
+        showToast("Коротко: "+diskItem.name);
+    }
+
+    @Override
+    public boolean onItemLongClicked(DiskItem diskItem) {
+        showLongToast("Длинно: "+diskItem.name);
+        return true;
+    }
+
     private static abstract class AbstractTextWatcher implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -390,6 +401,10 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void showToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showLongToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 
     private void showError(Throwable t) {
