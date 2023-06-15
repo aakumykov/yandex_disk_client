@@ -25,6 +25,7 @@ import com.github.aakumykov.yandex_disk_client.CloudClient;
 import com.github.aakumykov.yandex_disk_client.YandexDiskCloudClient;
 import com.github.aakumykov.yandex_disk_client_demo.databinding.ActivityMainBinding;
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils;
+import com.yandex.disk.rest.json.Resource;
 
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void prepareYandexClients() {
         mYandexAuthHelper = new YandexAuthHelper(this, REQUEST_CODE_YA_LOGIN, this);
-        mYandexDiskCloudClient = new MyYandexDiskClient(getResourceKey());
+        mYandexDiskCloudClient = new MyYandexDiskClient();
     }
 
     private void restoreFieldValues() {
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void onGetListButtonClicked(View view) {
 
-        mYandexDiskCloudClient.getItemsListAsync(null, sortingMode(), mListAdapter.getCurrentList().size(), 2)
+        mYandexDiskCloudClient.getItemsListAsync(getResourceKey(),null, sortingMode(), mListAdapter.getCurrentList().size(), 2)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -281,9 +282,13 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void onCheckExistenceButtonClicked(View view) {
 
-        final String path = getRemotePath();
+        final String remotePath = getRemotePath();
+        if (null == remotePath) {
+            showToast("Не указан путь к файлу в облаке");
+            return;
+        }
 
-        mYandexDiskCloudClient.checkItemExists(path)
+        mYandexDiskCloudClient.checkItemExists(getResourceKey(), remotePath)
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
@@ -305,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
                     @Override
                     public void onSuccess(Boolean aBoolean) {
                         final String c = aBoolean ? "" : " не";
-                        showToast("Элемент '"+path+"'"+c+" существует.");
+                        showToast("Элемент '"+remotePath+"'"+c+" существует.");
                     }
 
                     @Override
@@ -317,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void onGetDownloadLinkButtonClicked(View view) {
 
-        mYandexDiskCloudClient.getItemDownloadLink(getRemotePath())
+        mYandexDiskCloudClient.getItemDownloadLink(getResourceKey(), getRemotePath())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
@@ -439,15 +444,15 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     }
 
     private static class MyYandexDiskClient extends YandexDiskCloudClient<DiskItem> {
-
-        public MyYandexDiskClient(@NonNull String publicResourceKey) {
-            super(publicResourceKey);
-        }
-
         @Override
         public DiskItem cloudItemToLocalItem(com.yandex.disk.rest.json.Resource resource) {
             final String name = resource.isDir() ? "["+resource.getName()+"]" : resource.getName();
             return new DiskItem(name, resource.getCreated().getTime());
+        }
+
+        @Override
+        public String cloudFileToString(Resource resource) {
+            return "[file: " + resource.getName() + "]";
         }
     }
 }
