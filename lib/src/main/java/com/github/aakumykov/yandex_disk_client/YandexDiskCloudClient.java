@@ -37,7 +37,7 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     @Override
     public Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                         @Nullable String subdirName,
-                                        @NonNull LibrarySortingMode sortingMode,
+                                        @NonNull SortingModeType sortingMode,
                                         @IntRange(from = 0) int startOffset,
                                         int limit) {
 
@@ -47,7 +47,7 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     @Override
     public List<OutputItemType> getList(@NonNull String resourceKey,
                            @Nullable String subdirName,
-                           @NonNull LibrarySortingMode sortingMode,
+                           @NonNull SortingModeType sortingMode,
                            @IntRange(from = 0) int startOffset,
                            int limit) throws CloudClientException, IOException {
 
@@ -64,7 +64,7 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
         final Call<Resource> call = mYandexDiskApi.getPublicResourceWithContentList(
                 resourceKey,
                 dirName,
-                sortingModeToSortingKey(sortingMode),
+                libraryToCloudSortingMode(externalToLibrarySortingMode(sortingMode)),
                 startOffset,
                 limit
         );
@@ -134,11 +134,11 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     }
 
     @Override
-    public abstract LibrarySortingMode convertSortingMode(SortingModeType externalSortingMode);
+    public abstract LibrarySortingMode externalToLibrarySortingMode(SortingModeType externalSortingMode);
 
 
     @Override
-    public String sortingModeToSortingKey(@NonNull LibrarySortingMode sortingMode) {
+    public String libraryToCloudSortingMode(@NonNull LibrarySortingMode sortingMode) {
         switch (sortingMode) {
             case NAME_DIRECT:
                 return "name";
