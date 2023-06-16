@@ -446,9 +446,8 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     private static class MyYandexDiskClient extends YandexDiskCloudClient<DiskItem, LibrarySortingMode> {
 
         @Override
-        public LibrarySortingMode convertSortingMode(LibrarySortingMode externalSortingMode) {
+        public LibrarySortingMode externalToLibrarySortingMode(LibrarySortingMode externalSortingMode) {
             // Здесь программа-пользователь библиотеки использует ту же сортировку, что и библиотека.
-
             return externalSortingMode;
         }
 
