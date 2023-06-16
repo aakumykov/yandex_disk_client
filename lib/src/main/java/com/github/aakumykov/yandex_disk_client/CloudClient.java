@@ -13,13 +13,13 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
     // Главные методы
     Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                               @Nullable String subdirName,
-                                              @NonNull LibrarySortingMode sortingMode,
+                                              @NonNull SortingModeType sortingMode,
                                               int startOffset,
                                               int limit);
 
     List<OutputItemType> getList(@NonNull String resourceKey,
                                  @Nullable String subdirName,
-                                 @NonNull LibrarySortingMode sortingMode,
+                                 @NonNull SortingModeType sortingMode,
                                  int startOffset,
                                  int limit) throws CloudClientException, IOException;
 
@@ -33,11 +33,16 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
     // Вспомогательные методы
 
     /**
-     * Преобразует тип сортировки списка программы-пользователя во внутренний тип сортировки библиотеки.
+     * Преобразует тип сортировки программы, использующей библиотеку библиотеку,
+     * во внутренний тип сортировки библиотеки.
      */
-    LibrarySortingMode convertSortingMode(SortingModeType externalSortingMode);
+    LibrarySortingMode externalToLibrarySortingMode(SortingModeType externalSortingMode);
 
-    String sortingModeToSortingKey(@NonNull LibrarySortingMode sortingMode);
+    /**
+     * Преобразует внутренний тип сортировки библиотеки в тот параметр сортировки, что
+     * передаётся облачному API.
+     */
+    String libraryToCloudSortingMode(@NonNull LibrarySortingMode sortingMode);
 
     List<OutputItemType> extractCloudItemsFromCloudDir(CloudDirType cloudResource);
 
