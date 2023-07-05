@@ -6,18 +6,13 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.aakumykov.okhttp_file_downloader.OkHttpFileDownloader;
-import com.github.aakumykov.okhttp_file_downloader.exceptions.EmptyBodyException;
 import com.yandex.disk.rest.json.Link;
 import com.yandex.disk.rest.json.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -137,27 +132,6 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
             }
         }));
     }
-
-    @Override
-    public void downloadFileTo(@NonNull String url, @NonNull File targetFile)
-            throws EmptyBodyException, IOException,
-            com.github.aakumykov.okhttp_file_downloader.exceptions.BadResponseException {
-
-        OkHttpFileDownloader.downloadFileTo(url, targetFile);
-    }
-
-    @Override
-    public Completable downloadFileToAsync(@NonNull String url, @NonNull File targetFile) {
-        return Completable.fromCallable(new Callable<File>() {
-            @Override
-            public File call() throws Exception {
-                downloadFileTo(url, targetFile);
-                return targetFile;
-            }
-        });
-    }
-
-
 
     @Override
     public abstract LibrarySortingMode externalToLibrarySortingMode(SortingModeType externalSortingMode);
