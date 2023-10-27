@@ -35,6 +35,12 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     }
 
 
+    public YandexDiskCloudClient(@NonNull final String authToken) {
+        this();
+        mAuthToken = authToken;
+    }
+
+
     public void setAuthToken(String authToken) {
         mAuthToken = authToken;
     }
