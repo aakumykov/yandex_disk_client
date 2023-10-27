@@ -112,9 +112,14 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         mYandexDiskCloudClient = new MyYandexDiskClient();
     }
 
+    private void storeFieldValues(Bundle outState) {
+        outState.putString(KEY_RESOURCE_KEY, mBinding.publicResourceKeyInput.getText().toString());
+        outState.putString(KEY_REMOTE_PATH, mBinding.dirPathInput.getText().toString());
+    }
+
     private void restoreFieldValues() {
+        mBinding.dirPathInput.setText(getTextFromPrefs(KEY_REMOTE_PATH));
         mBinding.publicResourceKeyInput.setText(getTextFromPrefs(KEY_RESOURCE_KEY));
-        mBinding.remotePathInput.setText(getTextFromPrefs(KEY_REMOTE_PATH));
         mAuthToken = getTextFromPrefs(KEY_AUTH_TOKEN);
         mBinding.authButton.setText(mAuthToken);
         mYandexDiskCloudClient.setAuthToken(mAuthToken);
@@ -138,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
             }
         });
 
-        mBinding.remotePathInput.addTextChangedListener(new AbstractTextWatcher() {
+        mBinding.dirPathInput.addTextChangedListener(new AbstractTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 saveTextToPrefs(KEY_REMOTE_PATH, s.toString());
@@ -217,8 +222,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_RESOURCE_KEY, mBinding.publicResourceKeyInput.getText().toString());
-        outState.putString(KEY_REMOTE_PATH, mBinding.remotePathInput.getText().toString());
+        storeFieldValues(outState);
     }
 
     // FIXME: перейти на ActivityResultAPI
@@ -434,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     @Nullable
     private String getRemotePath() {
-        String text = mBinding.remotePathInput.getText().toString().trim();
+        String text = mBinding.dirPathInput.getText().toString().trim();
         return TextUtils.isEmpty(text) ? null : text;
     }
 

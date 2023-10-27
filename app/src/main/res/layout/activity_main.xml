@@ -33,12 +33,13 @@
         android:id="@+id/dirPathInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:inputType="textPersonName"
         android:hint="Каталог (путь) в облаке"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:singleLine="true"
         android:text="/"
-        android:textAlignment="center"
-        android:importantForAutofill="no" />
+        android:textAlignment="center" />
 
     <TextView
         android:layout_width="match_parent"
@@ -75,18 +76,6 @@
             app:srcCompat="@drawable/ic_input_clear" />
 
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/remotePathInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="remote file path"
-        android:inputType="textPersonName"
-        android:text=""
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"
