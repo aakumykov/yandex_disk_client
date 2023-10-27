@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         restoreFieldValues();
         computeSortingMode();
 
+        prepareYandexAuthHelper();
         prepareYandexClients();
 
         showYandexAuthStatus();
@@ -98,8 +99,11 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         mBinding.recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
-    private void prepareYandexClients() {
+    private void prepareYandexAuthHelper() {
         mYandexAuthHelper = new YandexAuthHelper(this, REQUEST_CODE_YA_LOGIN, this);
+    }
+
+    private void prepareYandexClients() {
         mYandexDiskCloudClient = new MyYandexDiskClient();
     }
 
