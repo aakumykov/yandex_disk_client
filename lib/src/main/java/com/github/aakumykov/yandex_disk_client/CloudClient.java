@@ -11,21 +11,16 @@ import io.reactivex.Single;
 public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, SortingModeType> {
 
     // Главные методы
+    List<OutputItemType> listDir(String path) throws IOException, CloudClientException;
 
-    /**
-     * Асинхронно запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
-     * или его подкаталоге remoteDirName, если он не равен null.
-     */
+    void createDir(String dirName);
+
     Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                               @Nullable String subdirName,
                                               @NonNull SortingModeType sortingMode,
                                               int startOffset,
                                               int limit);
 
-    /**
-     * Синхронно запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
-     * или его подкаталоге remoteDirName, если он не равен null.
-     */
     List<OutputItemType> getList(@NonNull String resourceKey,
                                  @Nullable String subdirName,
                                  @NonNull SortingModeType sortingMode,
@@ -61,9 +56,7 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
 
     
     abstract class CloudClientException extends Exception {
-        public CloudClientException() {
-        }
-
+        public CloudClientException() {}
         public CloudClientException(String message) {
             super(message);
         }

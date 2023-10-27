@@ -27,6 +27,7 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     private static final String TAG = YandexDiskCloudClient.class.getSimpleName();
     private static final String SLASH = "/";
     private final YandexDiskApi mYandexDiskApi;
+    @Nullable private String mAuthToken = null;
 
 
     public YandexDiskCloudClient() {
@@ -34,6 +35,29 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
     }
 
 
+    public void setAuthToken(String authToken) {
+        mAuthToken = authToken;
+    }
+
+
+    @Override
+    public List<OutputItemType> listDir(String path) throws IOException, CloudClientException {
+        Response<Resource> response = mYandexDiskApi.getResourceByPath(mAuthToken, path).execute();
+        Resource resource = response2resource(response);
+        return extractCloudItemsFromCloudDir(resource);
+    }
+
+
+
+    @Override
+    public void createDir(String dirName) {
+        throw new RuntimeException("Не реализовано");
+    }
+
+    /**
+     * Запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
+     * или его подкаталоге remoteDirName, если он не равен null.
+     */
     @Override
     public Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                         @Nullable String subdirName,
@@ -44,6 +68,10 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
         return Single.fromCallable(() -> getList(resourceKey, subdirName, sortingMode, startOffset, limit));
     }
 
+    /**
+     * Запрашивает список элементов в каталоге, на который указывает ссылка на публичный ресурс,
+     * или его подкаталоге remoteDirName, если он не равен null.
+     */
     @Override
     public List<OutputItemType> getList(@NonNull String resourceKey,
                            @Nullable String subdirName,
@@ -69,17 +97,11 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
                 limit
         );
 
-        final Response<Resource> response = call.execute();
-
-        // Обработка результата запроса
-        if (!response.isSuccessful())
-            throw new BadResponseException(response.code()+": "+response.message());
-
-        final Resource resource = response.body();
-        if (null == resource)
-            throw new NullPayloadException();
-
-        return extractCloudItemsFromCloudDir(resource);
+        return extractCloudItemsFromCloudDir(
+                response2resource(
+                        call.execute()
+                )
+        );
     }
 
     @Override
@@ -202,5 +224,17 @@ public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> impl
 
     private String fixFilePathStartingSlash(String filePath) {
         return filePath.startsWith(SLASH) ? filePath : SLASH + filePath;
+    }
+
+
+    private Resource response2resource(Response<Resource> response) throws BadResponseException, NullPayloadException {
+        if (!response.isSuccessful())
+            throw new BadResponseException(response.code()+": "+response.message());
+
+        final Resource resource = response.body();
+        if (null == resource)
+            throw new NullPayloadException();
+
+        return resource;
     }
 }
