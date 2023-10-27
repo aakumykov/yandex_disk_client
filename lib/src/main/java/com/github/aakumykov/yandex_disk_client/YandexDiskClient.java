@@ -59,6 +59,13 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     public void createDir(String dirNameOrPath) throws IOException, OperationFailedException {
         final Response<Resource> response = mYandexDiskApi.createDirectory(mAuthToken, dirNameOrPath).execute();
         if (!response.isSuccessful()) {
+
+            /*// Проверил JSON-сообщение с подробностями ошибки.
+            try (ResponseBody responseBody = response.errorBody()) {
+                String s = (null != responseBody) ? responseBody.string() : "";
+                Log.d(TAG, "createDir: "+s);
+            }*/
+
             throw new OperationFailedException(response.code() + ": " + response.message());
         }
     }
