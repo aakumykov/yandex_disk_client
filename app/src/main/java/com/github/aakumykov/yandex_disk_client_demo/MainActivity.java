@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.github.aakumykov.yandex_auth_helper.YandexAuthHelper;
 import com.github.aakumykov.yandex_disk_client.LibrarySortingMode;
-import com.github.aakumykov.yandex_disk_client.YandexDiskCloudClient;
+import com.github.aakumykov.yandex_disk_client.YandexDiskClient;
 import com.github.aakumykov.yandex_disk_client_demo.databinding.ActivityMainBinding;
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils;
 import com.yandex.disk.rest.json.Resource;
@@ -30,6 +30,10 @@ import com.yandex.disk.rest.json.Resource;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableObserver;
+import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -48,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     private static final String KEY_REMOTE_PATH = "PATH";
 
     private YandexAuthHelper mYandexAuthHelper;
-    private YandexDiskCloudClient<DiskItem, LibrarySortingMode> mYandexDiskCloudClient;
+    private YandexDiskClient<DiskItem, LibrarySortingMode> mYandexDiskClient;
 
     private ActivityMainBinding mBinding;
     private MyListAdapter mListAdapter;
@@ -109,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     }
 
     private void prepareYandexClients() {
-        mYandexDiskCloudClient = new MyYandexDiskClient();
+        mYandexDiskClient = new MyYandexDiskClient();
     }
 
     private void storeFieldValues(Bundle outState) {
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         mBinding.publicResourceKeyInput.setText(getTextFromPrefs(KEY_RESOURCE_KEY));
         mAuthToken = getTextFromPrefs(KEY_AUTH_TOKEN);
         mBinding.authButton.setText(mAuthToken);
-        mYandexDiskCloudClient.setAuthToken(mAuthToken);
+        mYandexDiskClient.setAuthToken(mAuthToken);
     }
 
     private void prepareButtons() {
@@ -135,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         mBinding.checkExistenceButton.setOnClickListener(this::onCheckExistenceButtonClicked);
         mBinding.getDownloadLinkButton.setOnClickListener(this::onGetDownloadLinkButtonClicked);
         mBinding.resetButton.setOnClickListener(this::onResetButtonClicked);
+        mBinding.createDirButton.setOnClickListener(this::onCreateDirButtonClicked);
 
         mBinding.publicResourceKeyInput.addTextChangedListener(new AbstractTextWatcher() {
             @Override
@@ -165,8 +170,45 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         });
     }
 
+    private void onCreateDirButtonClicked(View view) {
+
+        final String dirPath = getDirPath();
+
+        Completable.create(new CompletableOnSubscribe() {
+            @Override
+            public void subscribe(CompletableEmitter emitter) throws Exception {
+                mYandexDiskClient.createDir(dirPath);
+                emitter.onComplete();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+
+                .doOnSubscribe(disposable -> showProgressBar())
+                .doOnTerminate(this::hideProgressBar)
+
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        mCompositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        showToast("Каталог '"+dirPath+"' создан");
+                        hideProgressBar();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(e);
+                    }
+                });
+    }
+
     private void onUnAuthButtonClicked(View view) {
         mAuthToken = null;
+        mYandexDiskClient.setAuthToken(null);
         clearValueFromPrefs(KEY_AUTH_TOKEN);
         showYandexAuthStatus();
     }
@@ -254,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         Single.fromCallable(new Callable<List<DiskItem>>() {
             @Override
             public List<DiskItem> call() throws Exception {
-                return mYandexDiskCloudClient.listDir(dirPath);
+                return mYandexDiskClient.listDir(dirPath);
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -293,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void getListByKey(String resourceKey) {
 
-        mYandexDiskCloudClient.getListAsync(getResourceKey(),null, sortingMode(), mListAdapter.getCurrentList().size(), 2)
+        mYandexDiskClient.getListAsync(getResourceKey(),null, sortingMode(), mListAdapter.getCurrentList().size(), 2)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -357,7 +399,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
             return;
         }
 
-        mYandexDiskCloudClient.checkItemExists(getResourceKey(), remotePath)
+        mYandexDiskClient.checkItemExists(getResourceKey(), remotePath)
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
@@ -391,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void onGetDownloadLinkButtonClicked(View view) {
 
-        mYandexDiskCloudClient.getItemDownloadLink(getResourceKey(), getRemotePath())
+        mYandexDiskClient.getItemDownloadLink(getResourceKey(), getRemotePath())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
@@ -445,7 +487,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     @Override
     public void onYandexAuthSuccess(@NonNull String authToken) {
         mAuthToken = authToken;
-        mYandexDiskCloudClient.setAuthToken(authToken);
+        mYandexDiskClient.setAuthToken(authToken);
         saveTextToPrefs(KEY_AUTH_TOKEN, mAuthToken);
         showYandexAuthStatus();
     }
@@ -488,11 +530,13 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     }
 
     private void showError(Throwable t) {
+        mBinding.errorView.setText(ExceptionUtils.getErrorMessage(t));
         Toast.makeText(this, ExceptionUtils.getErrorMessage(t), Toast.LENGTH_LONG).show();
         Log.e(TAG, ExceptionUtils.getErrorMessage(t), t);
     }
 
     private void showProgressBar() {
+        mBinding.errorView.setText("");
         mBinding.progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -518,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
             return "";
     }
 
-    private static class MyYandexDiskClient extends YandexDiskCloudClient<DiskItem, LibrarySortingMode> {
+    private static class MyYandexDiskClient extends YandexDiskClient<DiskItem, LibrarySortingMode> {
 
         @Override
         public LibrarySortingMode externalToLibrarySortingMode(LibrarySortingMode externalSortingMode) {

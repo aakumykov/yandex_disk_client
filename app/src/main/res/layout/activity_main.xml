@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="6dp">
 
@@ -40,6 +41,12 @@
         android:singleLine="true"
         android:text="/"
         android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/createDirButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Создать этот каталог" />
 
     <TextView
         android:layout_width="match_parent"
@@ -134,6 +141,14 @@
             android:src="@drawable/ic_reset_2" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/errorView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/error"
+        tools:text="Ошибка"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
