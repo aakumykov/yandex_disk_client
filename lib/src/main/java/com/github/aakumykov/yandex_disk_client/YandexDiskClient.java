@@ -56,8 +56,10 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
 
 
     @Override
-    public void createDir(String dirName) {
-        throw new RuntimeException("Не реализовано");
+    public void createDir(String dirNameOrPath) throws IOException, OperationFailedException {
+        final Response<Resource> response = mYandexDiskApi.createDirectory(mAuthToken, dirNameOrPath).execute();
+        if (!response.isSuccessful())
+            throw new OperationFailedException(response.message());
     }
 
     /**
