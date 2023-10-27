@@ -5,9 +5,14 @@ import com.yandex.disk.rest.json.Resource;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Query;
 
 interface YandexDiskApi {
+
+    @GET("resources")
+    Call<Resource> getResourceByPath(@Header("Authorization") String authToken,
+                                     @Query("path") String path);
 
     @GET("public/resources")
     Call<Resource> getPublicResource(@Query("public_key") String publicKey,
