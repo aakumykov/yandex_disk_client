@@ -22,20 +22,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public abstract class YandexDiskCloudClient<OutputItemType,SortingModeType> implements CloudClient<Resource, Resource, OutputItemType, SortingModeType> {
+public abstract class YandexDiskClient<OutputItemType,SortingModeType> implements CloudClient<Resource, Resource, OutputItemType, SortingModeType> {
 
-    private static final String TAG = YandexDiskCloudClient.class.getSimpleName();
+    private static final String TAG = YandexDiskClient.class.getSimpleName();
     private static final String SLASH = "/";
     private final YandexDiskApi mYandexDiskApi;
     @Nullable private String mAuthToken = null;
 
 
-    public YandexDiskCloudClient() {
+    public YandexDiskClient() {
         mYandexDiskApi = getWebApi();
     }
 
 
-    public YandexDiskCloudClient(@NonNull final String authToken) {
+    public YandexDiskClient(@NonNull final String authToken) {
         this();
         mAuthToken = authToken;
     }
