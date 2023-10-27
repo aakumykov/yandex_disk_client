@@ -10,10 +10,15 @@ import io.reactivex.Single;
 
 public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, SortingModeType> {
 
-    // Главные методы
+    // Операции с авторизацией (над приватными ресурсами)
+
     List<OutputItemType> listDir(String path) throws IOException, CloudClientException;
 
-    void createDir(String dirName);
+
+    void createDir(String dirNameOrPath) throws IOException, OperationFailedException;
+
+
+    // Операции без авторизации (над публичными ресурсами)
 
     Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                               @Nullable String subdirName,
@@ -54,7 +59,9 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
 
     String cloudFileToString(CloudFileType cloudFileType);
 
-    
+
+    // Классы исключений
+
     abstract class CloudClientException extends Exception {
         public CloudClientException() {}
         public CloudClientException(String message) {
@@ -68,6 +75,11 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
         }
     }
     
-    class NullPayloadException extends CloudClientException {
+    class NullPayloadException extends CloudClientException {}
+
+    class OperationFailedException extends CloudClientException {
+        public OperationFailedException(String message) {
+            super(message);
+        }
     }
 }
