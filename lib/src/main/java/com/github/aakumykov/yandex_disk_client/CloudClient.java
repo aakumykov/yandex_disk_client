@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, SortingModeType> {
+public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, AppSortingMode> {
 
     // Операции с авторизацией (над приватными ресурсами)
 
@@ -22,13 +22,13 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
 
     Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                               @Nullable String subdirName,
-                                              @NonNull SortingModeType sortingMode,
+                                              @NonNull AppSortingMode sortingMode,
                                               int startOffset,
                                               int limit);
 
     List<OutputItemType> getList(@NonNull String resourceKey,
                                  @Nullable String subdirName,
-                                 @NonNull SortingModeType sortingMode,
+                                 @NonNull AppSortingMode sortingMode,
                                  int startOffset,
                                  int limit) throws CloudClientException, IOException;
 
@@ -45,13 +45,12 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
      * Преобразует тип сортировки программы, использующей библиотеку библиотеку,
      * во внутренний тип сортировки библиотеки.
      */
-    LibrarySortingMode externalToLibrarySortingMode(SortingModeType externalSortingMode);
+    LibrarySortingMode appToLibrarySortingMode(AppSortingMode appSortingMode);
 
     /**
-     * Преобразует внутренний тип сортировки библиотеки в тот параметр сортировки, что
-     * передаётся облачному API.
+     * Преобразует внутренний тип сортировки библиотеки в тот параметр сортировки облачного API.
      */
-    String libraryToCloudSortingMode(@NonNull LibrarySortingMode sortingMode);
+    String libraryToCloudSortingMode(@NonNull LibrarySortingMode librarySortingMode);
 
     List<OutputItemType> extractCloudItemsFromCloudDir(CloudDirType cloudResource);
 
