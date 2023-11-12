@@ -137,6 +137,11 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         mBinding.eraseLinkButton.setOnClickListener(v -> mBinding.publicResourceURL.setText(""));
         
         mBinding.clipboardPasteButton.setOnClickListener(this::onPasteButtonClicked);
+
+        mBinding.authErrorCheckBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mYandexDiskClient.setAuthToken(isChecked ? "@" : mAuthToken);
+        });
+
         mBinding.authButton.setOnClickListener(this::onAuthButtonClicked);
         mBinding.unAuthButton.setOnClickListener(this::onUnAuthButtonClicked);
         mBinding.getListButton.setOnClickListener(this::onGetListButtonClicked);

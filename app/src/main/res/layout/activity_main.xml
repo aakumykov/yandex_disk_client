@@ -30,6 +30,13 @@
 
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/authErrorCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="Сломать авторизацию" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
