@@ -35,7 +35,9 @@ import io.reactivex.CompletableEmitter;
 import io.reactivex.CompletableObserver;
 import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
 import io.reactivex.SingleObserver;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -117,13 +119,13 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     }
 
     private void storeFieldValues(Bundle outState) {
-        outState.putString(KEY_RESOURCE_KEY, mBinding.publicResourceKeyInput.getText().toString());
+        outState.putString(KEY_RESOURCE_KEY, mBinding.publicResourceURL.getText().toString());
         outState.putString(KEY_REMOTE_PATH, mBinding.dirPathInput.getText().toString());
     }
 
     private void restoreFieldValues() {
         mBinding.dirPathInput.setText(getTextFromPrefs(KEY_REMOTE_PATH));
-        mBinding.publicResourceKeyInput.setText(getTextFromPrefs(KEY_RESOURCE_KEY));
+        mBinding.publicResourceURL.setText(getTextFromPrefs(KEY_RESOURCE_KEY));
         mAuthToken = getTextFromPrefs(KEY_AUTH_TOKEN);
         mBinding.authButton.setText(mAuthToken);
         mYandexDiskClient.setAuthToken(mAuthToken);
@@ -131,17 +133,21 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void prepareButtons() {
 
-        mBinding.eraseFieldButton.setOnClickListener(v -> mBinding.publicResourceKeyInput.setText(""));
+        mBinding.erasePathButton.setOnClickListener(v -> mBinding.dirPathInput.setText("1"));
+        mBinding.eraseLinkButton.setOnClickListener(v -> mBinding.publicResourceURL.setText(""));
+        
         mBinding.clipboardPasteButton.setOnClickListener(this::onPasteButtonClicked);
         mBinding.authButton.setOnClickListener(this::onAuthButtonClicked);
         mBinding.unAuthButton.setOnClickListener(this::onUnAuthButtonClicked);
         mBinding.getListButton.setOnClickListener(this::onGetListButtonClicked);
         mBinding.checkExistenceButton.setOnClickListener(this::onCheckExistenceButtonClicked);
         mBinding.getDownloadLinkButton.setOnClickListener(this::onGetDownloadLinkButtonClicked);
-        mBinding.resetButton.setOnClickListener(this::onResetButtonClicked);
-        mBinding.createDirButton.setOnClickListener(this::onCreateDirButtonClicked);
+        mBinding.clearButton.setOnClickListener(this::onClearButtonClicked);
 
-        mBinding.publicResourceKeyInput.addTextChangedListener(new AbstractTextWatcher() {
+        mBinding.createDirButton.setOnClickListener(this::onCreateDirButtonClicked);
+        mBinding.listDirButton.setOnClickListener(this::onListDirButtonClicked);
+
+        mBinding.publicResourceURL.addTextChangedListener(new AbstractTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 saveTextToPrefs(KEY_RESOURCE_KEY, s.toString());
@@ -173,6 +179,9 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
     private void onCreateDirButtonClicked(View view) {
 
         final String dirPath = getDirPath();
+
+        if (dirPathIncorrect())
+            return;
 
         Completable.create(new CompletableOnSubscribe() {
             @Override
@@ -206,6 +215,55 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
                 });
     }
 
+    private boolean dirPathIncorrect() {
+        final String dirPath = getDirPath();
+        if (dirPath.isEmpty()) {
+            mBinding.dirPathInput.setError("Некорректен");
+            return true;
+        }
+        return false;
+    }
+
+
+    private void onListDirButtonClicked(View view) {
+
+        final String dirPath = getDirPath();
+
+        if (dirPathIncorrect())
+            return;
+
+        Single.create(new SingleOnSubscribe<List<DiskItem>>() {
+            @Override
+            public void subscribe(SingleEmitter<List<DiskItem>> emitter) throws Exception {
+                emitter.onSuccess(mYandexDiskClient.listDir(dirPath));
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+
+                .doOnSubscribe(disposable -> showProgressBar())
+                .doOnTerminate(this::hideProgressBar)
+
+                .subscribe(new SingleObserver<List<DiskItem>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        mCompositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onSuccess(List<DiskItem> diskItemList) {
+                        mListAdapter.clearList();
+                        mListAdapter.appendList(diskItemList, LibrarySortingMode.NAME_DIRECT);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(e);
+                    }
+                });
+    }
+
+
     private void onUnAuthButtonClicked(View view) {
         mAuthToken = null;
         mYandexDiskClient.setAuthToken(null);
@@ -213,12 +271,8 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
         showYandexAuthStatus();
     }
 
-    private void onResetButtonClicked(View view) {
-        onClearButtonClicked(view);
-    }
-
     private void onPasteButtonClicked(View view) {
-        mBinding.publicResourceKeyInput.setText(clipboardText());
+        mBinding.publicResourceURL.setText(clipboardText());
     }
 
     private void onSortingModeChanged() {
@@ -470,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
 
     private String getResourceKey() {
-        return mBinding.publicResourceKeyInput.getText().toString();
+        return mBinding.publicResourceURL.getText().toString();
     }
 
 

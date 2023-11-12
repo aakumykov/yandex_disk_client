@@ -30,23 +30,53 @@
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/dirPathInput"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Каталог (путь) в облаке"
-        android:imeOptions="actionDone"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        android:singleLine="true"
-        android:text="/"
-        android:textAlignment="center" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/createDirButton"
+        <EditText
+            android:id="@+id/dirPathInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Каталог (путь) в облаке"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:text="/"
+            android:textAlignment="center" />
+
+        <ImageView
+            android:id="@+id/erasePathButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            app:srcCompat="@drawable/ic_input_clear" />
+        
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Создать этот каталог" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/createDirButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Создать каталог" />
+
+        <Button
+            android:id="@+id/listDirButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="@color/teal_700"
+            android:text="Прочитать каталог" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -67,7 +97,7 @@
             app:srcCompat="@drawable/ic_baseline_content_paste_24" />
 
         <EditText
-            android:id="@+id/publicResourceKeyInput"
+            android:id="@+id/publicResourceURL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -76,7 +106,7 @@
             android:textAlignment="center" />
 
         <ImageView
-            android:id="@+id/eraseFieldButton"
+            android:id="@+id/eraseLinkButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
@@ -134,11 +164,11 @@
             app:layout_constraintTop_toBottomOf="@+id/isDirectSortToggle" />
 
         <ImageButton
-            android:id="@+id/resetButton"
+            android:id="@+id/clearButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:src="@drawable/ic_reset_2" />
+            android:src="@drawable/baseline_clear_all_24" />
 
     </LinearLayout>
 
