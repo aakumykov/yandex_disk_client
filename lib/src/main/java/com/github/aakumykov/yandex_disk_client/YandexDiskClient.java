@@ -46,6 +46,12 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     }
 
 
+    /**
+     * Запрашивает список файлов в приватном каталоге. Для работы метода требуется передать клиенту
+     * токен авторизации методом {@link #setAuthToken(String authToken)}
+     * @param path Путь к каталогу.
+     * @return Список файлов (объектов типа OutputItemType) в виде коллекции List.
+     */
     @Override
     public List<OutputItemType> listDir(String path) throws IOException, CloudClientException {
         Response<Resource> response = mYandexDiskApi.getResourceByPath(mAuthToken, path).execute();
