@@ -107,7 +107,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
         final Call<Resource> call = mYandexDiskApi.getPublicResourceWithContentList(
                 resourceKey,
                 dirName,
-                libraryToCloudSortingMode(appToLibrarySortingMode(sortingMode)),
+                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode)),
                 startOffset,
                 limit
         );
@@ -171,12 +171,14 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     }
 
     @Override
-    public abstract LibrarySortingMode appToLibrarySortingMode(SortingModeType appSortingMode);
+    public abstract YandexDiskSortingMode appToDiskSortingMode(SortingModeType appSortingMode);
+
+
 
 
     @Override
-    public String libraryToCloudSortingMode(@NonNull LibrarySortingMode librarySortingMode) {
-        switch (librarySortingMode) {
+    public String libraryToCloudSortingMode(@NonNull YandexDiskSortingMode yandexDiskSortingMode) {
+        switch (yandexDiskSortingMode) {
             case NAME_DIRECT:
                 return "name";
             case NAME_REVERSE:
@@ -186,7 +188,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
             case C_TIME_FROM_OLD_TO_NEW:
                 return "ctime";
             default:
-                throw new IllegalArgumentException("Неизвестное значение аргумента: "+ librarySortingMode);
+                throw new IllegalArgumentException("Неизвестное значение аргумента: "+ yandexDiskSortingMode);
         }
     }
 

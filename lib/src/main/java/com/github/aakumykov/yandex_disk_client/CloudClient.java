@@ -45,12 +45,13 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, AppSor
      * Преобразует тип сортировки программы, использующей библиотеку библиотеку,
      * во внутренний тип сортировки библиотеки.
      */
-    LibrarySortingMode appToLibrarySortingMode(AppSortingMode appSortingMode);
+    YandexDiskSortingMode appToDiskSortingMode(AppSortingMode appSortingMode);
+
 
     /**
      * Преобразует внутренний тип сортировки библиотеки в тот параметр сортировки облачного API.
      */
-    String libraryToCloudSortingMode(@NonNull LibrarySortingMode librarySortingMode);
+    String libraryToCloudSortingMode(@NonNull YandexDiskSortingMode yandexDiskSortingMode);
 
     List<OutputItemType> extractCloudItemsFromCloudDir(CloudDirType cloudResource);
 

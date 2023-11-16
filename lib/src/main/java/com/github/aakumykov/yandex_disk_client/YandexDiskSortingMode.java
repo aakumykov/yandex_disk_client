@@ -1,6 +1,6 @@
 package com.github.aakumykov.yandex_disk_client;
 
-public enum LibrarySortingMode {
+public enum YandexDiskSortingMode {
     NAME_DIRECT,
     NAME_REVERSE,
     C_TIME_FROM_OLD_TO_NEW,
