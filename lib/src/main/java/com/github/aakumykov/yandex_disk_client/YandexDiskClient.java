@@ -72,8 +72,22 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
                 Log.d(TAG, "createDir: "+s);
             }*/
 
-            throw new OperationFailedException(response.code() + ": " + response.message());
+            throw new OperationFailedException(codeAndMessage(response));
         }
+    }
+
+    @Override
+    public String getLinkForUpload(String path) throws IOException, CloudClientException {
+        final Response<Link> response = mYandexDiskApi.getLinkForUpload(mAuthToken, path).execute();
+
+        if (!response.isSuccessful())
+            throw new BadResponseException(codeAndMessage(response));
+
+        final Link link = response.body();
+        if (null == link)
+            throw new NullPayloadException();
+
+        return link.getHref();
     }
 
     /**
@@ -258,5 +272,13 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
             throw new NullPayloadException();
 
         return resource;
+    }
+
+    /*private OperationFailedException operationFailedException(Response<Resource> response) {
+        return new OperationFailedException(response.code() + ": " + response.message())
+    }*/
+
+    private String codeAndMessage(Response<?> response) {
+        return response.code() + ": " + response.message();
     }
 }

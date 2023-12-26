@@ -18,6 +18,8 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
     void createDir(String dirNameOrPath) throws IOException, OperationFailedException;
 
 
+    String getLinkForUpload(String path) throws IOException, CloudClientException;
+
     // Операции без авторизации (над публичными ресурсами)
 
     Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
