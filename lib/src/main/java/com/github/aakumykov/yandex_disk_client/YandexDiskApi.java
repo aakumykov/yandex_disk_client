@@ -21,6 +21,10 @@ interface YandexDiskApi {
     Call<Resource> createDirectory(@Header("Authorization") String authToken,
                                    @Query("path") String dirNameOrPath);
 
+    @GET("resources/upload")
+    Call<Link> getLinkForUpload(@Header("Authorization") String authToken,
+                                @Query("path") String path);
+
     // Публичныя ресурсы
 
     @GET("public/resources")

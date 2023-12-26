@@ -65,8 +65,29 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     public void createDir(String dirNameOrPath) throws IOException, OperationFailedException {
         final Response<Resource> response = mYandexDiskApi.createDirectory(mAuthToken, dirNameOrPath).execute();
         if (!response.isSuccessful()) {
-            throw new OperationFailedException(response.code() + ": " + response.message());
+
+            /*// Проверил JSON-сообщение с подробностями ошибки.
+            try (ResponseBody responseBody = response.errorBody()) {
+                String s = (null != responseBody) ? responseBody.string() : "";
+                Log.d(TAG, "createDir: "+s);
+            }*/
+
+            throw new OperationFailedException(codeAndMessage(response));
         }
+    }
+
+    @Override
+    public String getLinkForUpload(String path) throws IOException, CloudClientException {
+        final Response<Link> response = mYandexDiskApi.getLinkForUpload(mAuthToken, path).execute();
+
+        if (!response.isSuccessful())
+            throw new BadResponseException(codeAndMessage(response));
+
+        final Link link = response.body();
+        if (null == link)
+            throw new NullPayloadException();
+
+        return link.getHref();
     }
 
     /**
@@ -107,7 +128,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
         final Call<Resource> call = mYandexDiskApi.getPublicResourceWithContentList(
                 resourceKey,
                 dirName,
-                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode)),
+                libraryToCloudSortingMode(externalToLibrarySortingMode(sortingMode)),
                 startOffset,
                 limit
         );
@@ -171,14 +192,12 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     }
 
     @Override
-    public abstract YandexDiskSortingMode appToDiskSortingMode(SortingModeType appSortingMode);
-
-
+    public abstract LibrarySortingMode externalToLibrarySortingMode(SortingModeType externalSortingMode);
 
 
     @Override
-    public String libraryToCloudSortingMode(@NonNull YandexDiskSortingMode yandexDiskSortingMode) {
-        switch (yandexDiskSortingMode) {
+    public String libraryToCloudSortingMode(@NonNull LibrarySortingMode sortingMode) {
+        switch (sortingMode) {
             case NAME_DIRECT:
                 return "name";
             case NAME_REVERSE:
@@ -188,7 +207,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
             case C_TIME_FROM_OLD_TO_NEW:
                 return "ctime";
             default:
-                throw new IllegalArgumentException("Неизвестное значение аргумента: "+ yandexDiskSortingMode);
+                throw new IllegalArgumentException("Неизвестное значение аргумента: "+sortingMode);
         }
     }
 
@@ -253,5 +272,13 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
             throw new NullPayloadException();
 
         return resource;
+    }
+
+    /*private OperationFailedException operationFailedException(Response<Resource> response) {
+        return new OperationFailedException(response.code() + ": " + response.message())
+    }*/
+
+    private String codeAndMessage(Response<?> response) {
+        return response.code() + ": " + response.message();
     }
 }
