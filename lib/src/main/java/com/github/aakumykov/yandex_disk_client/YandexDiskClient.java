@@ -45,7 +45,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     }
 
 
-    public void setAuthToken(String authToken) {
+    public void setAuthToken(@Nullable String authToken) {
         mAuthToken = authToken;
     }
 
@@ -132,7 +132,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
         final Call<Resource> call = mYandexDiskApi.getPublicResourceWithContentList(
                 resourceKey,
                 dirName,
-                libraryToCloudSortingMode(externalToLibrarySortingMode(sortingMode)),
+                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode)),
                 startOffset,
                 limit
         );
@@ -196,11 +196,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     }
 
     @Override
-    public abstract LibrarySortingMode externalToLibrarySortingMode(SortingModeType externalSortingMode);
-
-
-    @Override
-    public String libraryToCloudSortingMode(@NonNull LibrarySortingMode sortingMode) {
+    public String libraryToCloudSortingMode(@NonNull YandexDiskSortingMode sortingMode) {
         switch (sortingMode) {
             case NAME_DIRECT:
                 return "name";
