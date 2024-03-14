@@ -198,14 +198,18 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     @Override
     public String libraryToCloudSortingMode(@NonNull YandexDiskSortingMode sortingMode) {
         switch (sortingMode) {
-            case NAME_DIRECT:
-                return "name";
-            case NAME_REVERSE:
-                return "-name";
-            case C_TIME_FROM_NEW_TO_OLD:
-                return "-ctime";
-            case C_TIME_FROM_OLD_TO_NEW:
-                return "ctime";
+            case NAME_DIRECT: return "name";
+            case NAME_REVERSE: return "-name";
+
+            case C_TIME_FROM_NEW_TO_OLD: return "-ctime";
+            case C_TIME_FROM_OLD_TO_NEW: return "ctime";
+
+            case M_TIME_FROM_NEW_TO_OLD: return "-mtime";
+            case M_TIME_FROM_OLD_TO_NEW: return "mtime";
+
+            case SIZE_FROM_BIG_TO_SMALL: return "-size";
+            case SIZE_FROM_SMALL_TO_BIG: return "size";
+
             default:
                 throw new IllegalArgumentException("Неизвестное значение аргумента: "+sortingMode);
         }
