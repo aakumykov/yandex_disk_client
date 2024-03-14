@@ -17,6 +17,13 @@ interface YandexDiskApi {
     Call<Resource> getResourceByPath(@Header("Authorization") String authToken,
                                      @Query("path") String path);
 
+    @GET("resources")
+    Call<Resource> getResourceByPath(@Header("Authorization") String authToken,
+                                     @Query("path") String path,
+                                     @Query("sort") String sort,
+                                     @Query("offset") int offset,
+                                     @Query("limit") int limit);
+
     @PUT("resources")
     Call<Resource> createDirectory(@Header("Authorization") String authToken,
                                    @Query("path") String dirNameOrPath);
