@@ -6,6 +6,10 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.github.aakumykov.yandex_disk_client.exceptions.BadResponseException;
+import com.github.aakumykov.yandex_disk_client.exceptions.CloudClientException;
+import com.github.aakumykov.yandex_disk_client.exceptions.NullPayloadException;
+import com.github.aakumykov.yandex_disk_client.exceptions.OperationFailedException;
 import com.yandex.disk.rest.json.Link;
 import com.yandex.disk.rest.json.Resource;
 

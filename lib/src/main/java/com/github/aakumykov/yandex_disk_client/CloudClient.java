@@ -3,6 +3,9 @@ package com.github.aakumykov.yandex_disk_client;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.github.aakumykov.yandex_disk_client.exceptions.CloudClientException;
+import com.github.aakumykov.yandex_disk_client.exceptions.OperationFailedException;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -60,28 +63,4 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, AppSor
     OutputItemType cloudItemToLocalItem(CloudFileType cloudFileType);
 
     String cloudFileToString(CloudFileType cloudFileType);
-
-
-    // Классы исключений
-
-    abstract class CloudClientException extends Exception {
-        public CloudClientException() {}
-        public CloudClientException(String message) {
-            super(message);
-        }
-    }
-    
-    class BadResponseException extends CloudClientException {
-        public BadResponseException(String errorMsg) {
-            super(errorMsg);
-        }
-    }
-    
-    class NullPayloadException extends CloudClientException {}
-
-    class OperationFailedException extends CloudClientException {
-        public OperationFailedException(String message) {
-            super(message);
-        }
-    }
 }
