@@ -64,6 +64,19 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     }
 
     @Override
+    public List<OutputItemType> listDir(String path, SortingModeType sortingMode) throws IOException, CloudClientException {
+        Response<Resource> response = mYandexDiskApi.getResourceByPath(
+                mAuthToken,
+                path,
+                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode))
+        ).execute();
+
+        Resource resource = response2resource(response);
+
+        return extractCloudItemsFromCloudDir(resource);
+    }
+
+    @Override
     public List<OutputItemType> listDir(
             String path,
             SortingModeType sortingMode,

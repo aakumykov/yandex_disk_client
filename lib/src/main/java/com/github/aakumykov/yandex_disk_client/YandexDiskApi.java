@@ -20,6 +20,11 @@ interface YandexDiskApi {
     @GET("resources")
     Call<Resource> getResourceByPath(@Header("Authorization") String authToken,
                                      @Query("path") String path,
+                                     @Query("sort") String sort);
+
+    @GET("resources")
+    Call<Resource> getResourceByPath(@Header("Authorization") String authToken,
+                                     @Query("path") String path,
                                      @Query("sort") String sort,
                                      @Query("offset") int offset,
                                      @Query("limit") int limit);

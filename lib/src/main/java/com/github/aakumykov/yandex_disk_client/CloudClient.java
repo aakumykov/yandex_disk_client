@@ -17,6 +17,8 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, AppSor
 
     List<OutputItemType> listDir(String path) throws IOException, CloudClientException;
 
+    List<OutputItemType> listDir(String path, AppSortingMode sortingMode) throws IOException, CloudClientException;
+
     List<OutputItemType> listDir(String path,
                                  AppSortingMode sortingMode,
                                  int startOffset,
