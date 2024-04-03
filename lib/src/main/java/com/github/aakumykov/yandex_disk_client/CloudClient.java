@@ -19,8 +19,11 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, AppSor
 
     List<OutputItemType> listDir(String path, AppSortingMode sortingMode) throws IOException, CloudClientException;
 
+    List<OutputItemType> listDir(String path, AppSortingMode sortingMode, Boolean reverseOrder) throws IOException, CloudClientException;
+
     List<OutputItemType> listDir(String path,
                                  AppSortingMode sortingMode,
+                                 Boolean reverseOrder,
                                  int startOffset,
                                  int limit) throws IOException, CloudClientException;
 
@@ -35,12 +38,14 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, AppSor
     Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
                                               @Nullable String subdirName,
                                               @NonNull AppSortingMode sortingMode,
+                                              Boolean reverseOrder,
                                               int startOffset,
                                               int limit);
 
     List<OutputItemType> getList(@NonNull String resourceKey,
                                  @Nullable String subdirName,
                                  @NonNull AppSortingMode sortingMode,
+                                 Boolean reverseOrder,
                                  int startOffset,
                                  int limit) throws CloudClientException, IOException;
 
@@ -57,7 +62,7 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, AppSor
      * Преобразует тип сортировки программы, использующей библиотеку библиотеку,
      * во внутренний тип сортировки библиотеки.
      */
-    YandexDiskSortingMode appToDiskSortingMode(AppSortingMode appSortingMode);
+    YandexDiskSortingMode appToDiskSortingMode(AppSortingMode appSortingMode, Boolean reverseOrder);
 
 
     /**

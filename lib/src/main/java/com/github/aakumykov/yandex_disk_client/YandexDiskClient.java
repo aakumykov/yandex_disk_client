@@ -65,10 +65,15 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
 
     @Override
     public List<OutputItemType> listDir(String path, SortingModeType sortingMode) throws IOException, CloudClientException {
+        return listDir(path, sortingMode,false);
+    }
+
+    @Override
+    public List<OutputItemType> listDir(String path, SortingModeType sortingMode, Boolean reverseOrder) throws IOException, CloudClientException {
         Response<Resource> response = mYandexDiskApi.getResourceByPath(
                 mAuthToken,
                 path,
-                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode))
+                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode, reverseOrder))
         ).execute();
 
         Resource resource = response2resource(response);
@@ -80,6 +85,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     public List<OutputItemType> listDir(
             String path,
             SortingModeType sortingMode,
+            Boolean reverseOrder,
             int startOffset,
             int limit
     )
@@ -88,7 +94,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
         Response<Resource> response = mYandexDiskApi.getResourceByPath(
                 mAuthToken,
                 path,
-                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode)),
+                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode, reverseOrder)),
                 startOffset,
                 limit
             ).execute();
@@ -134,12 +140,13 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
      */
     @Override
     public Single<List<OutputItemType>> getListAsync(@NonNull String resourceKey,
-                                        @Nullable String subdirName,
-                                        @NonNull SortingModeType sortingMode,
-                                        @IntRange(from = 0) int startOffset,
-                                        int limit) {
-
-        return Single.fromCallable(() -> getList(resourceKey, subdirName, sortingMode, startOffset, limit));
+                                                     @Nullable String subdirName,
+                                                     @NonNull SortingModeType sortingMode,
+                                                     Boolean reverseOrder,
+                                                     @IntRange(from = 0) int startOffset,
+                                                     int limit
+    ) {
+        return Single.fromCallable(() -> getList(resourceKey, subdirName, sortingMode, reverseOrder, startOffset, limit));
     }
 
     /**
@@ -150,6 +157,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     public List<OutputItemType> getList(@NonNull String resourceKey,
                            @Nullable String subdirName,
                            @NonNull SortingModeType sortingMode,
+                           Boolean reverseOrder,
                            @IntRange(from = 0) int startOffset,
                            int limit) throws CloudClientException, IOException {
 
@@ -166,7 +174,7 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
         final Call<Resource> call = mYandexDiskApi.getPublicResourceWithContentList(
                 resourceKey,
                 dirName,
-                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode)),
+                libraryToCloudSortingMode(appToDiskSortingMode(sortingMode, reverseOrder)),
                 startOffset,
                 limit
         );
