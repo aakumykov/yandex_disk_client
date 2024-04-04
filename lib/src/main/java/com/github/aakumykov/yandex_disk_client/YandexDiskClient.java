@@ -45,8 +45,9 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     }
 
 
-    public void setAuthToken(@Nullable String authToken) {
+    public YandexDiskClient<OutputItemType,SortingModeType> setAuthToken(@Nullable String authToken) {
         mAuthToken = authToken;
+        return this;
     }
 
 
