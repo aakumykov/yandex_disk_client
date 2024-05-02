@@ -1,223 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:padding="6dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="6dp">
 
-        <Button
-            android:id="@+id/authButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@color/pink_400"
-            android:text="@string/BUTTON_auth"
-            android:textAllCaps="false" />
-
-        <ImageButton
-            android:id="@+id/unAuthButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:src="@drawable/ic_clear_auth" />
-
-    </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/authErrorCheckBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="Сломать авторизацию" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/dirPathInput"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Каталог (путь) в облаке"
-            android:imeOptions="actionDone"
-            android:importantForAutofill="no"
-            android:inputType="textPersonName"
-            android:singleLine="true"
-            android:text="/"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/authButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/pink_400"
+                android:text="@string/BUTTON_auth"
+                android:textAllCaps="false" />
+
+            <ImageButton
+                android:id="@+id/unAuthButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:src="@drawable/ic_clear_auth" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/downloadFileButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Скачать файл 1.mp3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <CheckBox
+            android:id="@+id/authErrorCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Сломать авторизацию" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/dirPathInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Каталог (путь) в облаке"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName"
+                android:singleLine="true"
+                android:text="/"
+                android:textAlignment="center" />
+
+            <ImageView
+                android:id="@+id/erasePathButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/ic_input_clear" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/createDirButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Создать каталог" />
+
+            <Button
+                android:id="@+id/listDirButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/teal_700"
+                android:text="Прочитать каталог" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="или"
             android:textAlignment="center" />
 
-        <ImageView
-            android:id="@+id/erasePathButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/ic_input_clear" />
-        
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/createDirButton"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Создать каталог" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/listDirButton"
+            <ImageButton
+                android:id="@+id/clipboardPasteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/ic_baseline_content_paste_24" />
+
+            <EditText
+                android:id="@+id/publicResourceURL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Ссылка на публичную папку"
+                android:inputType="textPersonName"
+                android:textAlignment="center" />
+
+            <ImageView
+                android:id="@+id/eraseLinkButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/ic_input_clear" />
+
+        </LinearLayout>
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/teal_700"
-            android:text="Прочитать каталог" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="или"
-        android:textAlignment="center" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/clipboardPasteButton"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/ic_baseline_content_paste_24" />
-
-        <EditText
-            android:id="@+id/publicResourceURL"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Ссылка на публичную папку"
-            android:inputType="textPersonName"
+            android:text="Сортировать по:"
             android:textAlignment="center" />
 
-        <ImageView
-            android:id="@+id/eraseLinkButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/ic_input_clear" />
+        <LinearLayout
+            android:id="@+id/optionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <ToggleButton
+                android:id="@+id/sortByNameButton"
+                style="@style/start_stop_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:checked="true"
+                android:textOff="времени создания"
+                android:textOn="имени" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Сортировать по:"
-        android:textAlignment="center" />
+            <ToggleButton
+                android:id="@+id/isDirectSortToggle"
+                style="@style/start_stop_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:checked="true"
+                android:textOff="в обратном порядке"
+                android:textOn="в прямом порядке" />
 
-    <LinearLayout
-        android:id="@+id/optionsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        </LinearLayout>
 
-        <ToggleButton
-            android:id="@+id/sortByNameButton"
-            style="@style/start_stop_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:checked="true"
-            android:textOff="времени создания"
-            android:textOn="имени" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <ToggleButton
-            android:id="@+id/isDirectSortToggle"
-            style="@style/start_stop_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:checked="true"
-            android:textOff="в обратном порядке"
-            android:textOn="в прямом порядке" />
+            <Button
+                android:id="@+id/getListButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Запросить список файлов"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/isDirectSortToggle" />
 
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/clearButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:src="@drawable/baseline_clear_all_24" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/errorView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/error"
+            tools:text="Ошибка"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <Button
-            android:id="@+id/getListButton"
+            android:id="@+id/getDownloadLinkButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Запросить список файлов"
+            android:layout_height="wrap_content"
+            android:text="Получить ссылку на скачивание"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/isDirectSortToggle" />
+            app:layout_constraintTop_toBottomOf="@+id/getListButton" />
 
-        <ImageButton
-            android:id="@+id/clearButton"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/checkExistenceButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:src="@drawable/baseline_clear_all_24" />
+            android:text="Проверить существование"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/getListButton" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/errorView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/error"
-        tools:text="Ошибка"/>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <Button
-        android:id="@+id/getDownloadLinkButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Получить ссылку на скачивание"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getListButton" />
-
-    <Button
-        android:id="@+id/checkExistenceButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Проверить существование"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getListButton" />
-
-</LinearLayout>
+</ScrollView>

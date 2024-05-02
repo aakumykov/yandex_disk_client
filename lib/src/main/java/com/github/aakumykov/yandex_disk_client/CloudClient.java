@@ -34,7 +34,7 @@ public interface CloudClient<CloudDirType, CloudFileType, OutputItemType, Sortin
                                  int startOffset,
                                  int limit) throws CloudClientException, IOException;
 
-    Single<String> getItemDownloadLink(@NonNull String resourceKey, @NonNull String remoteFilePath);
+    Single<String> getItemDownloadLink(@NonNull String filePath);
 
     Single<Boolean> checkItemExists(@NonNull String resourceKey, @NonNull String remoteFilePath);
 

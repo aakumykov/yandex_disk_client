@@ -141,15 +141,13 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
     }
 
     @Override
-    public Single<String> getItemDownloadLink(@NonNull String resourceKey,
-                                              @NonNull String remoteFileOrDirPath) {
+    public Single<String> getItemDownloadLink(@NonNull String filePath) {
 
-        checkNotNull(resourceKey);
-        checkNotNull(remoteFileOrDirPath);
+        checkNotNull(filePath);
 
         return Single.create(emitter -> {
 
-            final Call<Link> call = mYandexDiskApi.getPublicFileDownloadLink(resourceKey, fixFilePathStartingSlash(remoteFileOrDirPath));
+            final Call<Link> call = mYandexDiskApi.getPublicFileDownloadLink(fixFilePathStartingSlash(filePath));
 
             call.enqueue(new Callback<Link>() {
                 @Override

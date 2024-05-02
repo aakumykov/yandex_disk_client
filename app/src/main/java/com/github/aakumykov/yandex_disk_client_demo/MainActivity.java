@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void prepareButtons() {
 
+        mBinding.downloadFileButton.setOnClickListener(v -> onDownloadFileClicked());
+
         mBinding.erasePathButton.setOnClickListener(v -> mBinding.dirPathInput.setText("1"));
         mBinding.eraseLinkButton.setOnClickListener(v -> mBinding.publicResourceURL.setText(""));
         
@@ -179,6 +181,29 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
                 onSortingModeChanged();
             }
         });
+    }
+
+    private void onDownloadFileClicked() {
+
+        mYandexDiskClient.getItemDownloadLink("/1.mp3")
+                .doOnSubscribe(disposable -> showProgressBar())
+                .doOnTerminate(this::hideProgressBar)
+                .subscribe(new SingleObserver<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(String s) {
+                        showToast("ССЫЛКА НА СКАЧИВАНИЕ: "+s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(e);
+                    }
+                });
     }
 
     private void onCreateDirButtonClicked(View view) {
@@ -492,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements YandexAuthHelper.
 
     private void onGetDownloadLinkButtonClicked(View view) {
 
-        mYandexDiskClient.getItemDownloadLink(getResourceKey(), getRemotePath())
+        mYandexDiskClient.getItemDownloadLink(getRemotePath())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {

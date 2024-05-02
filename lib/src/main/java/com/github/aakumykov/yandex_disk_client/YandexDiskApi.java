@@ -41,4 +41,7 @@ interface YandexDiskApi {
     @GET("public/resources/download")
     Call<Link> getPublicFileDownloadLink(@Query("public_key") String publicKey,
                                          @Query("path") String filePath);
+
+    @GET("public/resources/download")
+    Call<Link> getPublicFileDownloadLink(@Query("path") String filePath);
 }
