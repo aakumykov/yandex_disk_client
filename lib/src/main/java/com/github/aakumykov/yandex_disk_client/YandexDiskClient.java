@@ -2,6 +2,8 @@ package com.github.aakumykov.yandex_disk_client;
 
 import static com.github.aakumykov.argument_utils.ArgumentUtils.checkNotNull;
 
+import android.util.Log;
+
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -240,6 +242,9 @@ public abstract class YandexDiskClient<OutputItemType,SortingModeType> implement
 
     @Override
     public String libraryToCloudSortingMode(@NonNull YandexDiskSortingMode sortingMode) {
+
+        Log.d(TAG, "libraryToCloudSortingMode(), input mode: " + sortingMode);
+
         switch (sortingMode) {
             case NAME_DIRECT: return "name";
             case NAME_REVERSE: return "-name";
