@@ -6,7 +6,7 @@ plugins {
 project.ext {
     artifactId = 'yandex_disk_client'
     groupId = 'com.github.aakumykov'
-    versionCode = 23
+    versionCode = 24
     versionName = "0.0." + versionCode
 }
 
@@ -56,10 +56,10 @@ dependencies {
     implementation 'com.github.aakumykov:argument_utils:0.3'
     implementation 'com.github.aakumykov:yandex_auth_helper:0.0.6'
 
-    api "io.reactivex.rxjava2:rxjava:2.2.21"
-    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation "io.reactivex.rxjava2:rxjava:2.2.21"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
-    api 'com.yandex.android:disk-restapi-sdk:1.03'
+    implementation 'com.yandex.android:disk-restapi-sdk:1.03'
 
     // FIXME: убрать ненужные части Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
